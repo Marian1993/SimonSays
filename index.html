@@ -10,22 +10,59 @@
 
 <script>
 
-    document.querySelector("body").innerHTML = <div id="contenidor"></div>
+    var jugar;
 
-    pintar();
-function pintar(){
+    function Boto(valor,pitjat) {
+        this.valor = valor;
+        this.pitjat = pitjat;
 
-    document.querySelector("#contenidor").innerHTML = '<div class="cuadre" id="bVermell"></div>';
-    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bVerd"></div>';
-    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bBlau"></div>';
-    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bGroc"></div>';
-    document.querySelector("#contenidor").innerHTML =+ '<button class="boto" id="boto">Jugar</button>';
-}
-    function Boto() {
-        this.color;
-        this.valor;
     }
+    function Usuari() {
+        this.secuencia = [];
+        this.torn = false;
 
-</script>
+    }
+    function Simon() {
+        this.secuencia = []
+        this.nivell;
+        this.torn = false;
+
+    }
+    function Jugar(){
+        this.secuencia = [];
+        this.boton = [];
+        this.nivell = function (nivell){
+
+            if(nivell === 1){
+
+            }else if(nivell === 2){
+
+            }else if(nivell == 3){
+
+            }
+        }
+        this.init = function (){
+
+            document.querySelector('#boto').addEventListener()
+
+
+        }
+        this.pintar = function (){
+            document.querySelector("body").innerHTML = '<div id="contenidor"></div>';
+            document.querySelector("#contenidor").innerHTML = '<p id="jugador">Simon</p>';
+            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bVermell"></button>';
+            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bVerd"></button>';
+            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bBlau"></button>';
+            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bGroc"></button>';
+            document.querySelector("#contenidor").innerHTML += '<button id="boto">Jugar</button>';
+        }
+
+    }
+    function Init() {
+        jugar = new Jugar();
+        jugar.pintar()
+    }
+    Init();
+    <img src="../../AppData/Local/Temp/slider-html-css.jpg" height="500" width="1000"/></script>
 </body>
 </html>

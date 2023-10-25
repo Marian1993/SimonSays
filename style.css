@@ -2,8 +2,74 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    background-color: lightsteelblue;
 }
 
 #contenidor{
     display: grid;
+    grid-template-areas:
+        "header header"
+        "main1 main2"
+        "main3 main4"
+        "boto boto";
+
+
+    padding-top: 50px;
+    padding-bottom: 150px;
 }
+
+#boto{
+    font-size: 35px;
+    background-color: white;
+    width: 125px;
+    height: 70px;
+    margin-top: 75px;
+    border-radius: 10px;
+    grid-area: boto;
+    justify-self: center;
+}
+#jugador{
+    font-size: 60px;
+    margin-bottom: 50px;
+    grid-area: header;
+    justify-self: center;
+}
+/*General botons de color*/
+.cuadre{
+    width: 200px;
+    height: 200px;
+    margin: 5px;
+    border: black solid 3px;
+
+}
+
+#bVermell{
+    background-color: red;
+    border-top-left-radius: 300px;
+    grid-area: main1;
+    justify-self: end;
+
+}
+
+#bVerd{
+    background-color: green;
+    border-top-right-radius: 300px;
+    grid-area: main2;
+
+}
+
+#bBlau{
+    background-color: blue;
+    border-bottom-left-radius: 300px;
+    grid-area: main3;
+    justify-self: end;
+
+}
+
+#bGroc{
+    background-color: yellow;
+    border-bottom-right-radius: 300px;
+    grid-area: main4;
+
+}
+
