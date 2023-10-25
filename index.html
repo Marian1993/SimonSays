@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 
 <script>
 
+    document.querySelector("body").innerHTML = <div id="contenidor"></div>
+
+    pintar();
+function pintar(){
+
+    document.querySelector("#contenidor").innerHTML = '<div class="cuadre" id="bVermell"></div>';
+    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bVerd"></div>';
+    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bBlau"></div>';
+    document.querySelector("#contenidor").innerHTML =+ '<div class="cuadre" id="bGroc"></div>';
+    document.querySelector("#contenidor").innerHTML =+ '<button class="boto" id="boto">Jugar</button>';
+}
+    function Boto() {
+        this.color;
+        this.valor;
+    }
 
 </script>
 </body>
