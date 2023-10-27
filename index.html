@@ -11,58 +11,178 @@
 <script>
 
     var jugar;
+    var colors = ['bVermell','bVerd','bBlau','bGroc'];
+    var secuencia = [];
+    var secuenciaUsuari = [];
+    var so = {
+        bVermell: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3"),
+        bVerd: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3"),
+        bBlau: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound3.mp3"),
+        bGroc: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound4.mp3")
+    };
+    var SetI = 1000;
+    var SetT = 1000;
 
-    function Boto(valor,pitjat) {
+
+    function Boto(valor) {
         this.valor = valor;
-        this.pitjat = pitjat;
+        this.opacitar = () => {
+            document.querySelector(this.valor).style.opacity = "0.4";
+        }
+        this.aclarar = () => {
+            document.querySelector(this.valor).style.opacity = "1";
+        }
+        this.canviarOpacitat = function (){
 
+            document.querySelector(this.valor).addEventListener('mouseover',this.opacitar);
+            document.querySelector(this.valor).addEventListener('mouseout',this.aclarar);
+
+        }
     }
     function Usuari() {
-        this.secuencia = [];
-        this.torn = false;
+        this.jugar = function (torn){
 
+            for (var i = 0; i < colors.length; i++) {
+
+                document.querySelector("#" + colors[i]).addEventListener('click', function (){
+
+                        secuenciaUsuari.push(this.id);
+                        return true;
+                });
+            }
+            return false;
+        }
     }
     function Simon() {
         this.secuencia = []
-        this.nivell;
-        this.torn = false;
+        this.torn = true;
+        //arreglar
+        this.jugar = function (torn){
+            //L'array s'ha de llevbar quan estiguin es torns
+            for (var i = 0; i <= torn; i++) {
+                console.log(torn);
+                console.log("entrar simon");
+                this.secuencia.push(colors[Math.floor(Math.random() * colors.length)]);
+
+                secuencia.push(this.secuencia[i]);
+            }
+            this.torn = false;
+        }
 
     }
     function Jugar(){
-        this.secuencia = [];
-        this.boton = [];
-        this.nivell = function (nivell){
+        this.torn = 3;
+        this.tornSimon = true;
+        this.botons = [];
+        this.fallo = false;
+        this.dificultat = function (){
 
-            if(nivell === 1){
+            var elegirDificultat  = prompt("Elegueix dificultat 1.Facil 2.Intermitg 3.Dificil");
 
-            }else if(nivell === 2){
-
-            }else if(nivell == 3){
-
+            if(parseInt(elegirDificultat) === 1){
+                SetT = 1000;
+                SetI = 1000;
+            }else if(parseInt(elegirDificultat) === 2){
+                SetT = 700;
+                SetI = 700;
+            }else if(parseInt(elegirDificultat) === 3){
+                SetT = 400;
+                SetI = 400;
             }
         }
         this.init = function (){
 
-            document.querySelector('#boto').addEventListener()
+            simon = new Simon();
+            jugador = new Usuari();
+            for (var i = 0; i < 4; i++) {
+
+                var boto = new Boto("#" + colors[i]);
+                this.botons.push(boto);
+                this.botons[i].canviarOpacitat();
+            }
+        }
+        this.verificarSecuencia = () =>{
+            for (var j = 0; j <= this.torn; j++) {
+                console.log("entrar for");
+                if(secuencia[j] === secuenciaUsuari[j]){
+                    console.log("entrar if");
+                    this.torn++;
+                }else{
+                    this.fallo = true;
+                }
+
+            }
+        }
+        this.jugar = () => {
+
+            this.init();
+            //Funcionen bés les dificultats
+            //this.dificultat();
+           /*
+            if(this.tornSimon){
+
+                this.tornSimon = false;
+
+            }else if(!this.tornSimon){
+                var correcte = jugador.jugar(this.tornSimon);
+                this.tornSimon = correcte;
+            }
+            if(correcte){
+
+                this.verificarSecuencia();
+            }
+
+            */
+
+            simon.jugar(this.torn);
+
+
+            var i = 0;
+            var interval =  setInterval(function (){
+
+                document.querySelector('#' + secuencia[i]).style.opacity = "0.2";
+                //S'escolta una vegada he clicat a sa web, sino dona fallo¿?
+                so[secuencia[i]].play();
+                desferOpecitat(i);
+                i++;
+               console.log(i)
+                if(i >= secuencia.length){
+                    clearInterval(interval);
+                }
+           },SetI);
+
 
 
         }
         this.pintar = function (){
+
             document.querySelector("body").innerHTML = '<div id="contenidor"></div>';
             document.querySelector("#contenidor").innerHTML = '<p id="jugador">Simon</p>';
-            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bVermell"></button>';
-            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bVerd"></button>';
-            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bBlau"></button>';
-            document.querySelector("#contenidor").innerHTML += '<button class="cuadre" id="bGroc"></button>';
-            document.querySelector("#contenidor").innerHTML += '<button id="boto">Jugar</button>';
+            for (var i = 0; i < colors.length; i++) {
+                document.querySelector("#contenidor").innerHTML += `<button type="button" class="cuadre" id="${colors[i]}"></button>`;
+            }
+            document.querySelector("#contenidor").innerHTML += '<button type="button" id="boto">Jugar</button>';
+            for (var i = 0; i < secuenciaUsuari.length; i++) {
+                console.log(secuenciaUsuari[i]);
+            }
         }
 
     }
+
+    //Lleva s'opacitat en els recuadres que en simon a ha seleccionat
+    function desferOpecitat(index){
+        setTimeout(function (){
+            document.querySelector('#' + secuencia[index]).style.opacity = "1";
+        },SetT);
+    }
+
     function Init() {
         jugar = new Jugar();
-        jugar.pintar()
+        jugar.pintar();
+        jugar.jugar();
     }
+
     Init();
-    <img src="../../AppData/Local/Temp/slider-html-css.jpg" height="500" width="1000"/></script>
+   </script>
 </body>
 </html>

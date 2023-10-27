@@ -13,7 +13,6 @@
         "main3 main4"
         "boto boto";
 
-
     padding-top: 50px;
     padding-bottom: 150px;
 }
@@ -38,7 +37,7 @@
 .cuadre{
     width: 200px;
     height: 200px;
-    margin: 5px;
+    margin: 4px;
     border: black solid 3px;
 
 }
