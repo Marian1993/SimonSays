@@ -20,7 +20,6 @@
     };
     var SetT = 1000;
     var torn = 1;
-    var idTemporal = "";
     var clics = 0;
     var tornSimon = true;
 
@@ -39,39 +38,46 @@
             document.querySelector(this.valor).addEventListener('mouseout',this.aclarar);
             document.querySelector(this.valor).addEventListener('click', function (){
                 if(!tornSimon){
-                    idTemporal = this.id;
-                    so[idTemporal].play();
+                    console.log("Entra Listener");
+                    so[this.id].play();
                     clics++;
-                    Usuari();
+                    Usuari(this.id);
                 }
             });
         }
     }
-    function Usuari() {
-        var fall = false;
-        secuenciaUsuari.push(idTemporal);
+    function Usuari(idColor) {
 
-        if(clics === secuencia.length){
+        secuenciaUsuari.push(idColor);
 
-            for (var i = 0; i < secuencia.length; i++) {
-                if(secuencia[i] === secuenciaUsuari[i]){
+        for (var i = 0; i < secuenciaUsuari.length; i++) {
+            if(secuencia[i] === secuenciaUsuari[i]){
 
-                }else if(secuencia[i] !== secuenciaUsuari[i]){
-                    fall = true;
-                    alert("Has fallat")
-                }
+            }else if(secuencia[i] !== secuenciaUsuari[i]){
+                Jugar();
+                alert("Has fallat");
             }
+        }
+        if(clics === secuencia.length){
+            tornSimon = true;
+            TornJugador();
             secuenciaUsuari.splice(0,secuenciaUsuari.length);
             clics = 0;
             torn++;
-            if(!fall){
-                tornSimon = true;
-                setTimeout(Simon,1000);
-            }
+            setTimeout(Simon,800);
         }
+    }
+    function ReinicarPartida() {
+
+        clics = 0;
+        torn = 1;
+        secuencia.splice(0,secuencia.length);
+        secuenciaUsuari.splice(0,secuenciaUsuari.length);
+
     }
     function Simon() {
         secuencia.push(colors[Math.floor(Math.random() * colors.length)]);
+        ContadorRonda();
         var index = 0;
         opacitarSeguent();
         function opacitarSeguent() {
@@ -86,15 +92,21 @@
             }
             if(index === secuencia.length){
                 tornSimon = false;
+                TornJugador();
             }
         }
     }
+
+
 
     function Partida(){
         this.botons = [];
         this.dificultat = function (){
 
-            var elegirDificultat  = prompt("Elegueix dificultat   1.Facil   2.Intermitg   3.Dificil");
+            var elegirDificultat  = prompt(`Elegueix dificultat
+            1.Facil
+            2.Intermitg
+            3.Dificil`);
 
             if(parseInt(elegirDificultat) === 1){
                 SetT = 2000;
@@ -106,38 +118,50 @@
         }
         this.init = function (){
 
+            this.pintar();
+
             for (var i = 0; i < 4; i++) {
 
                 var boto = new Boto("#" + colors[i]);
                 this.botons.push(boto);
                 this.botons[i].afegirEventsBoto();
             }
+            if(torn)
             this.dificultat();
+            TornJugador();
+            ContadorRonda();
         }
-
         this.pintar = function (){
 
             document.querySelector("body").innerHTML = '<div id="contenidor"></div>';
-            document.querySelector("#contenidor").innerHTML = '<p id="jugador">Simon</p>';
+            document.querySelector("#contenidor").innerHTML += '<p id="jugador"></p>';
+            document.querySelector("#contenidor").innerHTML += '<p id="contador"></p>;'
             for (var i = 0; i < colors.length; i++) {
                 document.querySelector("#contenidor").innerHTML += `<button type="button" class="cuadre" id="${colors[i]}"></button>`;
             }
             document.querySelector("#contenidor").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
-            for (var i = 0; i < secuenciaUsuari.length; i++) {
-                console.log(secuenciaUsuari[i]);
-            }
+
+        }
+    }
+    function ContadorRonda(){
+        document.querySelector("#contador").textContent = torn;
+    }
+    function TornJugador() {
+        if(tornSimon){
+
+            document.querySelector("#jugador").textContent = "Simon";
+        }else {
+            document.querySelector("#jugador").textContent = "Jugador";
         }
     }
     function Init() {
         partida = new Partida();
-        partida.pintar();
         partida.init();
     }
     function Jugar(){
+        ReinicarPartida();
         Simon();
     }
-
-
     Init();
    </script>
 </body>
