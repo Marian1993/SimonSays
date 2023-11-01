@@ -12,6 +12,7 @@
     var colors = ['bVermell','bVerd','bBlau','bGroc'];
     var secuencia = [];
     var secuenciaUsuari = [];
+    var marcador = [];
     var so = {
         bVermell: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3"),
         bVerd: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3"),
@@ -104,9 +105,9 @@
         this.dificultat = function (){
 
             var elegirDificultat  = prompt(`Elegueix dificultat
-            1.Facil
-            2.Intermitg
-            3.Dificil`);
+            1.Bàsic
+            2.Mitjà
+            3.Difícil`);
 
             if(parseInt(elegirDificultat) === 1){
                 SetT = 2000;
@@ -134,19 +135,41 @@
         this.pintar = function (){
 
             document.querySelector("body").innerHTML = '<div id="contenidor"></div>';
-            document.querySelector("#contenidor").innerHTML += '<p id="jugador"></p>';
-            document.querySelector("#contenidor").innerHTML += '<p id="contador"></p>;'
+            document.querySelector("body").innerHTML += '<div id="marcador" hidden></div>';
+
+            var contenidor = document.querySelector("#contenidor");
+
+            contenidor.innerHTML += '<h1 id="jugador"></h1>';
+            contenidor.innerHTML += '<h1 id="contador"></h1>;'
             for (var i = 0; i < colors.length; i++) {
-                document.querySelector("#contenidor").innerHTML += `<button type="button" class="cuadre" id="${colors[i]}"></button>`;
+                contenidor.innerHTML += `<button type="button" class="cuadre" id="${colors[i]}"></button>`;
             }
-            document.querySelector("#contenidor").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
+            contenidor.innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
 
         }
+    }
+    function MarcadorForm() {
+
+        this.form = function (){
+
+            document.querySelector("#taula").innerHTML += '<tr></tr>';
+
+        }
+        this.pintar = function (){
+
+            document.querySelector("#marcador").innerHTML = '<h1>Marcador</h1>';
+            document.querySelector("#marcador").innerHTML += '<table id="taula"></table>';
+            document.querySelector("#taula").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Enviar</button>';
+            document.querySelector("#taula").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
+
+        }
+        
     }
     function ContadorRonda(){
         document.querySelector("#contador").textContent = torn;
     }
     function TornJugador() {
+
         if(tornSimon){
 
             document.querySelector("#jugador").textContent = "Simon";
@@ -157,8 +180,11 @@
     function Init() {
         partida = new Partida();
         partida.init();
+        marcador = new MarcadorForm();
+        marcador.pintar();
     }
     function Jugar(){
+        document.querySelector("#marcador").hidden = true;
         ReinicarPartida();
         Simon();
     }

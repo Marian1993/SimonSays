@@ -35,7 +35,7 @@
     justify-self: center;
 }
 
-#jugador{
+h1{
     font-size: 60px;
     margin-bottom: 50px;
     grid-area: header;
@@ -77,6 +77,9 @@
     background-color: yellow;
     border-bottom-right-radius: 300px;
     grid-area: main4;
+}
+
+#marcador{
 
 }
 
