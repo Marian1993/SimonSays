@@ -9,22 +9,24 @@
 
 
 <script>
+    //Variables
     var colors = ['bVermell','bVerd','bBlau','bGroc'];
     var secuencia = [];
     var secuenciaUsuari = [];
-    var marcador = [];
+    var marcador = ["10-Pedro","5-Mily","7-Gaspar","12-Manuel","11-Ñoño","5-Dara","8-Ona","4-Lola","9-Agusti","3-Mana","6-Mari"];
     var so = {
         bVermell: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3"),
         bVerd: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3"),
         bBlau: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound3.mp3"),
         bGroc: new Audio("https://s3.amazonaws.com/freecodecamp/simonSound4.mp3")
     };
-    var SetT = 1000;
+    var SetT = 300;
     var torn = 1;
     var clics = 0;
     var tornSimon = true;
 
 
+    //En aquesta funció li afagesc a tots el botons principals els addEventListener
     function Boto(valor) {
         this.valor = valor;
         this.opacitar = () => {
@@ -39,7 +41,6 @@
             document.querySelector(this.valor).addEventListener('mouseout',this.aclarar);
             document.querySelector(this.valor).addEventListener('click', function (){
                 if(!tornSimon){
-                    console.log("Entra Listener");
                     so[this.id].play();
                     clics++;
                     Usuari(this.id);
@@ -50,32 +51,38 @@
     function Usuari(idColor) {
 
         secuenciaUsuari.push(idColor);
+        var fallo = false;
 
         for (var i = 0; i < secuenciaUsuari.length; i++) {
             if(secuencia[i] === secuenciaUsuari[i]){
 
+                //QUe pasa en cas de fall de l'usuari
             }else if(secuencia[i] !== secuenciaUsuari[i]){
-                Jugar();
+                var ranking = new MarcadorForm();
+                if(ranking.comprovarRanking()){
+                    document.querySelector("#contenidor").style.display = "none";
+                    document.querySelector("#marcador").style.display = "grid";
+                    ranking.pintar();
+                }else {
+                    Jugar();
+                }
+                fallo = true;
                 alert("Has fallat");
             }
         }
+        //Si s'ha asertat tota la secuencia, resetetja algunes variables i crida a n'en simon
         if(clics === secuencia.length){
             tornSimon = true;
             TornJugador();
             secuenciaUsuari.splice(0,secuenciaUsuari.length);
             clics = 0;
             torn++;
-            setTimeout(Simon,800);
+            if(!fallo){
+                setTimeout(Simon,800);
+            }
         }
     }
-    function ReinicarPartida() {
 
-        clics = 0;
-        torn = 1;
-        secuencia.splice(0,secuencia.length);
-        secuenciaUsuari.splice(0,secuenciaUsuari.length);
-
-    }
     function Simon() {
         secuencia.push(colors[Math.floor(Math.random() * colors.length)]);
         ContadorRonda();
@@ -112,7 +119,7 @@
             if(parseInt(elegirDificultat) === 1){
                 SetT = 2000;
             }else if(parseInt(elegirDificultat) === 2){
-                SetT = 100;
+                SetT = 1000;
             }else if(parseInt(elegirDificultat) === 3){
                 SetT = 500;
             }
@@ -122,7 +129,6 @@
             this.pintar();
 
             for (var i = 0; i < 4; i++) {
-
                 var boto = new Boto("#" + colors[i]);
                 this.botons.push(boto);
                 this.botons[i].afegirEventsBoto();
@@ -135,38 +141,101 @@
         this.pintar = function (){
 
             document.querySelector("body").innerHTML = '<div id="contenidor"></div>';
-            document.querySelector("body").innerHTML += '<div id="marcador" hidden></div>';
+            document.querySelector("body").innerHTML += '<div id="marcador"></div>';
 
             var contenidor = document.querySelector("#contenidor");
 
             contenidor.innerHTML += '<h1 id="jugador"></h1>';
             contenidor.innerHTML += '<h1 id="contador"></h1>;'
+
             for (var i = 0; i < colors.length; i++) {
                 contenidor.innerHTML += `<button type="button" class="cuadre" id="${colors[i]}"></button>`;
             }
             contenidor.innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
-
         }
     }
+
     function MarcadorForm() {
 
-        this.form = function (){
+        this.llistaObjectes =[];
+        this.numeros = [];
+        this.ordenat = []
 
-            document.querySelector("#taula").innerHTML += '<tr></tr>';
+        this.ordenarArray = function () {
 
+            for (let i = 0; i < marcador.length; i++) {
+                this.llistaObjectes.push(marcador[i].split("-"));
+            }
+            for (let i = 0; i < this.llistaObjectes.length; i++) {
+                this.numeros.push(parseInt(this.llistaObjectes[i][0]));
+            }
+            this.numeros.sort(function (a, b) {
+                return b - a
+            });
+            for (let i = 0; i < this.numeros.length; i++) {
+                for (let j = 0; j < this.llistaObjectes.length; j++) {
+
+                    if (this.numeros[i] == this.llistaObjectes[j][0]) {
+                        this.ordenat.push(this.llistaObjectes[j]);
+                        this.llistaObjectes.splice(j, 1)
+                    }
+                }
+            }
+        }
+        this.comprovarRanking = function (){
+
+            this.ordenarArray();
+
+            for (let i = 0; i < this.ordenat.length; i++) {
+
+
+                if(this.ordenat.length !== 0 && this.ordenat.length > i){
+
+                    if(this.ordenat[i][0] < torn-1){
+                        console.log(i + "-->" + this.ordenat[i][0]);
+                        console.log(torn-1)
+                        return true;
+                    }
+                }else {
+                    return false;
+                }
+            }
+            if(this.ordenat.length === 0){
+                return true;
+            }
+            return false;
         }
         this.pintar = function (){
 
-            document.querySelector("#marcador").innerHTML = '<h1>Marcador</h1>';
-            document.querySelector("#marcador").innerHTML += '<table id="taula"></table>';
-            document.querySelector("#taula").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Enviar</button>';
-            document.querySelector("#taula").innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
+            this.ordenarArray();
 
+            var marc = document.querySelector("#marcador");
+
+            marc.innerHTML = '<h1>Marcador</h1>';
+            marc.innerHTML +='<ul id="ul1">Nom</ul>';
+            marc.innerHTML +='<ul id="ul2">Puntuacio</ul>';
+
+            for (let i = 0; i < this.ordenat.length; i++) {
+                if(i < 10){
+                    document.querySelector("#ul1").innerHTML += `<li>${i+1 + " - "}${this.ordenat[i][1]}</li>`;
+                    document.querySelector("#ul2").innerHTML += `<li>${this.ordenat[i][0]}</li>`;
+                }
+            }
+            marc.innerHTML += '<div id="form"></div>'
+
+            var form = document.querySelector("#form");
+
+            form.innerHTML += '<label for="nom">Nom:</label>';
+            form.innerHTML += '<input type="text" id="nom" name="nom">';
+            form.innerHTML += '<button type="button" id="boto" class="enviar" onclick="EnviarPuntuacio()">Enviar</button>';
+            form.innerHTML += '<button type="button" id="boto" onclick="Jugar()">Jugar</button>';
         }
-        
     }
+
+
+    //Vistes
     function ContadorRonda(){
-        document.querySelector("#contador").textContent = torn;
+        document.querySelector("#contador").textContent = "Torn: " + torn;
     }
     function TornJugador() {
 
@@ -177,14 +246,34 @@
             document.querySelector("#jugador").textContent = "Jugador";
         }
     }
+
+    //Es un onclick per guardar la puntuació en el marcador
+    function EnviarPuntuacio(){
+        var nom = document.querySelector("#nom").value;
+        marcador.push(torn-1 + "-" + nom);
+        var ranking = new MarcadorForm();
+        ranking.pintar();
+        document.querySelector(".enviar").disabled = true;
+    }
+
+    //Transcurs partida
+    function ReinicarPartida() {
+        clics = 0;
+        torn = 1;
+        secuencia.splice(0,secuencia.length);
+        secuenciaUsuari.splice(0,secuenciaUsuari.length);
+    }
     function Init() {
         partida = new Partida();
         partida.init();
-        marcador = new MarcadorForm();
+        var marcador = new MarcadorForm();
+        console.log("init")
         marcador.pintar();
     }
     function Jugar(){
-        document.querySelector("#marcador").hidden = true;
+        document.querySelector(".enviar").disabled = false;
+        document.querySelector("#contenidor").style.display = "grid";
+        document.querySelector("#marcador").style.display = "none";
         ReinicarPartida();
         Simon();
     }
